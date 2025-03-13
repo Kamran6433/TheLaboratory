@@ -2,206 +2,42 @@
 import { ref, onMounted } from 'vue';
 import { useUserStore } from '~/stores/user';
 import { storeToRefs } from 'pinia';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const userStore = useUserStore();
 const { getIsAuthenticated, getUser } = storeToRefs(userStore);
 
-
-const stripe = ref(true);
-// const config = useRuntimeConfig();
+const stripe = ref(null);
 const elements = ref(null);
 const name = ref('');
 const error = ref('');
 const loading = ref(false);
 const amount = 1000; // £10.00 in pence
 const paymentIntentID = ref(null);
-
-const allProductsID = ref([]);  // Store ALL the products ID
-
-const productsID = ref([]);  // Store the products ID
-
-const productsName = ref([]);  // Store the products name
-
-const productsPrice = ref([]);  // Store the products price 
-
-// onMounted(async () => {
-//   console.log('Stripe publishable key:', config.public.STRIPE_PUBLISHABLE_KEY);
-
-//   try {
-//     stripe.value = await useClientStripe();
-
-//     console.log('Stripe loaded:', stripe.value);
-
-//     // const response = await fetch('/api/create-payment-intent-stripe', {
-//     //   method: 'POST',
-//     //   headers: { 'Content-Type': 'application/json' },
-//     //   body: JSON.stringify({ amount })
-//     // });
-
-//     const { data, error: fetchError } = await useFetch('/api/create-nuxt-payment-intent', {
-//       method: 'POST',
-//       body: { amount: 1000 } // $10.00
-//     });
-
-//     if (fetchError.value) throw new Error('Failed to create payment intent');
-    
-//     const { clientSecret, paymentIntentID: intentID } = data.value;
-
-//     console.log('Client secret:', clientSecret);
-//     console.log('Payment Intent ID:', intentID);
-
-//     paymentIntentID.value = intentID; // Store the paymentIntentID
-
-//     // elements.value = stripe.value.elements({ clientSecret: clientSecret });
-
-//     // const paymentElement = elements.value.create('payment');
-//     // console.log('Payment element created:', paymentElement);
-//     // paymentElement.mount('#payment-element');
-//     // console.log('Payment element mounted');
-
-//     const paymentElement = elements.value.create('payment', clientSecret);
-//     paymentElement.mount('#payment-element');
-//   } catch (err) {
-//     console.error('Error:', err);
-//     error.value = 'Failed to load payment form. Please refresh the page.';
-//   }
-// });
-
-const handleSubmit = async () => {
-
-  // Get the product data and store
-  const response = await fetch('/api/get-all-products', {
-    method: 'POST',
-    // headers: { 'Content-Type': 'application/json' },
-
-  });
-
-  // fetch the response from the server using .json()
-  const data = await response.json();
-
-  allProductsID.value = data.products.map((product) => product.id);
-
-  console.log('Data: ', data);
-
-  if (!stripe.value || !elements.value) {
-    error.value = 'Stripe has not loaded yet. Please try again.';
-    return;
-  }
-
-  loading.value = true;
-  error.value = '';
-
-  try {
-    const { error: stripeError } = await stripe.value.confirmPayment({
-      elements: elements.value,
-      confirmParams: {
-        return_url: `${window.location.origin}/payment-success?payment_intent=${paymentIntentID.value}`,
-        payment_method_data: {
-          billing_details: {
-            name: name.value
-          }
-        }
-      }
-    });
-
-    if (stripeError) {
-      throw new Error(stripeError.message);
-    }
-    // If successful, Stripe will redirect to the return_url
-  } catch (err) {
-    error.value = err.message;
-  } finally {
-    loading.value = false;
-  }
-};
-
-const fetchProducts = async () => {
-  try {
-    const response = await fetch('/api/get-all-products', {
-      method: 'GET',
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to fetch products');
-    }
-
-    const data = await response.json();
-    return data.products;
-  } catch (error) {
-    console.error('Error fetching products:', error);
-    return [];
-  }
-};
-
-const fetchSpecificProduct = async (productId) => {
-  try {
-    const response = await fetch(`/api/get-product/${productId}`, {
-      method: 'GET',
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to fetch product');
-    }
-
-    const data = await response.json();
-    return data.product;
-  } catch (error) {
-    console.error('Error fetching product:', error);
-    throw error;
-  }
-};
-
-const getProductsByIdPost = async () => {
-  // Get the product data and store
-  const response = await fetch('/api/get-products-by-id', {
-    method: 'POST',
-    // headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ productsID: productsID.value })
-  });
-
-  // fetch the response from the server using .json()
-  const data = await response.json();
-
-  productsID.value = data.products.map((product) => product.id);
-  // store the name of the product
-  productsName.value = data.products.map((product) => product.name);
-
-  // store the price of the product
-  productsPrice.value = data.products.map((product) => product.default_price);
-
-  console.log('Data: ', data);
-};
+const productId = ref('prod_example'); // Replace with your actual product ID
 
 const createStripePaymentCheckoutSession = async () => {
-  // Get the product price data data and send it to the server
-  const response = await fetch('/api/stripe-payment-checkout-session', {
-    method: 'POST',
-    // headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ default_price: productsPrice.value })
-  });
-
-  // fetch the response from the server using .json()
-  const data = await response.json();
-  console.log('PAYMENT Data: ', data);
-
-  // Redirect to the checkout session
-  window.location = data.url;
-};
-
-const createStripeSubscriptionCheckoutSession = async () => {
   if (!getIsAuthenticated.value) {
-    error.value = 'Please log in to subscribe.';
+    router.push('/login');
+    return;
+  }
+
+  // Add email verification check
+  if (!getUser.value.emailVerified) {
+    router.push('/verify-email');
     return;
   }
 
   try {
-    // Get the product price data and send it to the server
-    const response = await fetch('/api/stripe-subscription-checkout-session', {
+    const response = await fetch('/api/stripe-payment-checkout-session', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ 
-        // default_price: productsPrice.value,
-        user_id: getUser.value.uid  // Send the user ID
+        user_id: getUser.value.uid,
+        productId: productId.value,
+        planTitle: 'Standard Plan',
+        planPrice: amount
       })
     });
 
@@ -209,11 +45,54 @@ const createStripeSubscriptionCheckoutSession = async () => {
       throw new Error('Failed to create checkout session');
     }
 
-    const data = await response.json();
-    console.log('SUBSCRIPTION Data: ', data);
+    const session = await response.json();
+    console.log('Payment session created:', session);
 
-    // Redirect to the checkout session
-    window.location = data.url;
+    window.location = session.url;
+  } catch (err) {
+    console.error('Error creating payment session:', err);
+    error.value = 'Failed to create payment session. Please try again.';
+  }
+};
+
+const createStripeSubscriptionCheckoutSession = async () => {
+  if (!getIsAuthenticated.value) {
+    error.value = 'Please log in to subscribe.';
+    router.push('/login');
+    return;
+  }
+
+  if (!getUser.value.emailVerified) {
+    error.value = 'Please verify your email before subscribing.';
+    router.push('/verify-email');
+    return;
+  }
+
+  try {
+    const payload = { 
+      productId: productId.value,
+      priceId: 'price_example', // Replace with your actual price ID
+      user_id: getUser.value.uid,
+      subscriptionName: 'Premium Subscription',
+      subscriptionPrice: amount,
+      subscriptionType: 'Monthly'
+    };
+
+    const response = await fetch('/api/stripe-subscription-checkout-session', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Failed to create checkout session: ${errorText}`);
+    }
+
+    const session = await response.json();
+    console.log('Subscription session created:', session);
+
+    window.location = session.url;
   } catch (err) {
     console.error('Error creating subscription:', err);
     error.value = 'Failed to create subscription. Please try again.';
@@ -222,96 +101,119 @@ const createStripeSubscriptionCheckoutSession = async () => {
 </script>
 
 <template>
-  <v-card class="max-w-md mx-auto mt-8 p-6 bg-white shadow-lg rounded-lg">
-    <v-card-title class="text-2xl font-bold mb-4">
-      Checkout
-    </v-card-title>
-    <p
-      v-for="id in productsID"
-      :key="id"
-    >
-      Product ID: {{ id }}
-    </p>
-    <v-form @submit.prevent="handleSubmit">
-      <v-text-field
-        v-model="name"
-        label="Name on Card"
-        required
-        outlined
-        class="mb-4"
-      />
-      
-      <div id="payment-element" />
+  <v-container class="py-12 px-4 px-lg-12 max-width-1600">
+    <v-row justify="center">
+      <v-col cols="12" md="8" lg="6">
+        <v-card class="payment-card pa-6 rounded-xl">
+          <v-card-title class="text-h4 font-weight-bold mb-6">
+            Choose a Payment Option
+          </v-card-title>
+          
+          <v-card-text>
+            <p class="text-body-1 mb-6">
+              Select one of our payment options below to get started with our services.
+            </p>
 
-      <v-alert
-        v-if="error"
-        type="error"
-        class="mb-16"
-      >
-        {{ error }}
-      </v-alert>
-      
-      <v-btn
-        type="submit"
-        color="primary"
-        :loading="loading"
-        :disabled="!stripe || loading"
-        block
-        x-large
-        class="mt-4"
-        @click="handleSubmit"
-      >
-        Pay £{{ (amount / 100).toFixed(2) }}
-      </v-btn>
-      <div
-        v-for="price in productsPrice"
-        :key="price"
-      >
-        <p>Pay: £{{ price }}</p>
-      </div>
-      <!-- Loop through productsName and display each product name -->
-      <div
-        v-for="name in productsName"
-        :key="name"
-      >
-        <p>Product Name: {{ name }}</p>
-      </div>
-      <v-btn
-        type="submit"
-        color="primary"
-        :loading="loading"
-        :disabled="!stripe || loading"
-        block
-        x-large
-        class="mt-4"
-        @click="getProductsByIdPost"
-      >
-        get Products By Id Post
-      </v-btn>
-      <v-btn
-        type="submit"
-        color="primary"
-        :loading="loading"
-        :disabled="!stripe || loading"
-        block
-        x-large
-        class="mt-4"
-        @click="createStripePaymentCheckoutSession"
-      >
-        payment
-      </v-btn>
-      <v-btn
-        type="submit"
-        color="primary"
-        :loading="loading"
-        :disabled="!stripe || loading || !getIsAuthenticated"
-        block
-        x-large
-        class="mt-4"
-        @click="createStripeSubscriptionCheckoutSession"
-      >
-        {{ getIsAuthenticated ? 'Subscribe' : 'Log in to Subscribe' }}
-      </v-btn>
-    </v-form>
-  </v-card>
+            <v-alert
+              v-if="error"
+              type="error"
+              class="mb-6"
+            >
+              {{ error }}
+            </v-alert>
+            
+            <v-row class="mb-6">
+              <v-col cols="12" md="6">
+                <v-card
+                  class="payment-option h-100 pa-4 rounded-xl"
+                  elevation="2"
+                  hover
+                >
+                  <v-card-title class="text-h6 font-weight-bold">
+                    One-Time Payment
+                  </v-card-title>
+                  <v-card-text>
+                    <p class="text-body-2">
+                      Make a single payment for immediate access to our standard features.
+                    </p>
+                    <p class="text-h5 font-weight-bold mt-4">
+                      £{{ (amount / 100).toFixed(2) }}
+                    </p>
+                  </v-card-text>
+                  <v-card-actions>
+                    <v-btn
+                      color="primary"
+                      block
+                      :loading="loading"
+                      :disabled="loading"
+                      @click="createStripePaymentCheckoutSession"
+                    >
+                      Pay Now
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-col>
+              
+              <v-col cols="12" md="6">
+                <v-card
+                  class="payment-option h-100 pa-4 rounded-xl"
+                  elevation="2"
+                  hover
+                >
+                  <v-card-title class="text-h6 font-weight-bold">
+                    Monthly Subscription
+                  </v-card-title>
+                  <v-card-text>
+                    <p class="text-body-2">
+                      Subscribe for ongoing access to premium features and benefits.
+                    </p>
+                    <p class="text-h5 font-weight-bold mt-4">
+                      £{{ (amount / 100).toFixed(2) }}/month
+                    </p>
+                  </v-card-text>
+                  <v-card-actions>
+                    <v-btn
+                      color="success"
+                      block
+                      :loading="loading"
+                      :disabled="loading || !getIsAuthenticated"
+                      @click="createStripeSubscriptionCheckoutSession"
+                    >
+                      Subscribe
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-col>
+            </v-row>
+            
+            <p class="text-body-2 text-center text-grey-darken-1">
+              By proceeding with payment, you agree to our Terms and Conditions.
+              <br>All payments are securely processed through Stripe.
+            </p>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
+
+<style scoped>
+.payment-card {
+  background-color: white;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.payment-option {
+  transition: transform 0.3s ease;
+  border: 1px solid #e0e0e0;
+}
+
+.payment-option:hover {
+  transform: translateY(-5px);
+}
+
+.max-width-1600 {
+  max-width: 1600px;
+  margin: 0 auto;
+}
+</style>

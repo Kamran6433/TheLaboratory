@@ -7,7 +7,7 @@ definePageMeta({
 
 <template>
   <div class="full-width">
-    <section class="landing">
+    <section class="auth-section">
       <v-container
         class="pa-0"
         fluid
@@ -19,3 +19,12 @@ definePageMeta({
     </section>
   </div>
 </template>
+
+<style scoped>
+.auth-section {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  background-color: #f8f9fa;
+}
+</style>

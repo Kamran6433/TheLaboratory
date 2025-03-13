@@ -93,7 +93,7 @@ const goToSignUp = () => {
         >
           <v-card-title>
             <h1 class="text-3xl md:text-4xl font-bold mb-6">
-              Log in to Studybyte
+              Log in to Your Account
             </h1>
           </v-card-title>
           <v-card-text>
@@ -122,7 +122,7 @@ const goToSignUp = () => {
               />
               <v-btn
                 type="submit"
-                color="#7C3AED"
+                color="primary"
                 block
                 x-large
                 :disabled="!isFormValid"
@@ -162,10 +162,10 @@ const goToSignUp = () => {
       <v-col
         cols="12"
         md="6"
-        class="d-flex justify-center align-center"
+        class="d-none d-md-flex justify-center align-center"
       >
         <img
-          src="~/assets/3d_images/Saly-8.png"
+          src="https://via.placeholder.com/500x400?text=Login+Illustration"
           alt="Login Illustration"
           class="max-w-full h-auto object-contain illustration"
         >
@@ -180,7 +180,11 @@ const goToSignUp = () => {
 }
 
 .py-24 {
-  padding-top: 12rem;
-  padding-bottom: 1rem;
+  padding-top: 8rem;
+  padding-bottom: 3rem;
+}
+
+.min-height-100 {
+  min-height: 80vh;
 }
 </style>

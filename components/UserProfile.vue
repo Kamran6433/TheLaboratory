@@ -14,7 +14,6 @@ const userProfile = ref({
   name: '',
   email: '',
   number: '',
-  school: '',
   isCustomer: false,
 });
 
@@ -29,19 +28,54 @@ const stripeCustomerData = ref({
 const loading = ref(true);
 const error = ref(null);
 
-// const formattedEndDate = computed(() => {
-//   if (stripeCustomerData.value.subscriptionEndDate) {
-//     return new Date(stripeCustomerData.value.subscriptionEndDate).toLocaleDateString();
-//   }
-//   return 'N/A';
-// });
+const subscriptionDisplay = computed(() => {
+  const displayData = {
+    Status: stripeCustomerData.value.subscriptionStatus,
+    'Subscription ID': stripeCustomerData.value.subscriptionId,
+    'Plan Name': stripeCustomerData.value.subscriptionPlanName || 'Default Plan',
+    'Plan Amount': stripeCustomerData.value.planAmount ? 
+      `£${(stripeCustomerData.value.planAmount / 100).toFixed(2)}` : 'N/A',
+    'Billing Interval': stripeCustomerData.value.planInterval || 'Monthly',
+  };
 
-// const formattedLastPaymentDate = computed(() => {
-//   if (stripeCustomerData.value.lastPaymentDate) {
-//     return new Date(stripeCustomerData.value.lastPaymentDate).toLocaleDateString();
-//   }
-//   return 'N/A';
-// });
+  // Add last payment information
+  if (stripeCustomerData.value.lastPaymentDate) {
+    displayData['Last Payment Date'] = new Date(stripeCustomerData.value.lastPaymentDate.seconds * 1000)
+      .toLocaleDateString('en-GB', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+      });
+    displayData['Last Payment Amount'] = 
+      `£${(stripeCustomerData.value.lastPaymentAmount / 100).toFixed(2)}`;
+  }
+
+  // Add cancellation information if subscription is cancelling
+  if (stripeCustomerData.value.subscriptionStatus === 'cancelling') {
+    if (stripeCustomerData.value.cancellationScheduledAt) {
+      displayData['Cancellation Date'] = new Date(stripeCustomerData.value.cancellationScheduledAt.seconds * 1000)
+        .toLocaleDateString('en-GB', {
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+    }
+    if (stripeCustomerData.value.subscriptionEndDate) {
+      displayData['Access Until'] = new Date(stripeCustomerData.value.subscriptionEndDate.seconds * 1000)
+        .toLocaleDateString('en-GB', {
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+    }
+  }
+
+  return displayData;
+});
 
 onMounted(async () => {
   try {
@@ -136,62 +170,11 @@ const cancelSubscription = async () => {
   }
 };
 
-
 const userProfileDisplay = computed(() => ({
   Email: userProfile.value.email,
   Phone: userProfile.value.number,
-  School: userProfile.value.school,
-  'Customer Status': userProfile.value.isCustomer ? 'Stripe Customer' : 'Not a Stripe Customer'
+  'Account Status': userProfile.value.isCustomer ? 'Premium Member' : 'Free Account'
 }));
-
-const subscriptionDisplay = computed(() => {
-  const displayData = {
-    Status: stripeCustomerData.value.subscriptionStatus,
-    'Subscription ID': stripeCustomerData.value.subscriptionId,
-    'Plan Name': stripeCustomerData.value.subscriptionPlanName || 'Default Plan',
-    'Plan Amount': stripeCustomerData.value.planAmount ? 
-      `£${(stripeCustomerData.value.planAmount / 100).toFixed(2)}` : 'N/A',
-    'Billing Interval': stripeCustomerData.value.planInterval || 'Monthly',
-  };
-
-  // Add last payment information
-  if (stripeCustomerData.value.lastPaymentDate) {
-    displayData['Last Payment Date'] = new Date(stripeCustomerData.value.lastPaymentDate.seconds * 1000)
-      .toLocaleDateString('en-GB', {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric'
-      });
-    displayData['Last Payment Amount'] = 
-      `£${(stripeCustomerData.value.lastPaymentAmount / 100).toFixed(2)}`;
-  }
-
-  // Add cancellation information if subscription is cancelling
-  if (stripeCustomerData.value.subscriptionStatus === 'cancelling') {
-    if (stripeCustomerData.value.cancellationScheduledAt) {
-      displayData['Cancellation Date'] = new Date(stripeCustomerData.value.cancellationScheduledAt.seconds * 1000)
-        .toLocaleDateString('en-GB', {
-          day: 'numeric',
-          month: 'long',
-          year: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit'
-        });
-    }
-    if (stripeCustomerData.value.subscriptionEndDate) {
-      displayData['Access Until'] = new Date(stripeCustomerData.value.subscriptionEndDate.seconds * 1000)
-        .toLocaleDateString('en-GB', {
-          day: 'numeric',
-          month: 'long',
-          year: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit'
-        });
-    }
-  }
-
-  return displayData;
-});
 </script>
 
 <template>
@@ -220,7 +203,7 @@ const subscriptionDisplay = computed(() => {
       <template v-else-if="!error">
         <v-img
           height="200"
-          src="https://picsum.photos/700/200?random"
+          src="https://via.placeholder.com/700x200?text=Profile+Banner"
           class="bg-gray-100"
         >
           <v-avatar
@@ -332,7 +315,7 @@ const subscriptionDisplay = computed(() => {
             to="/profile/update"
             class="mr-2 text-base"
           >
-            Manage Profile
+            Edit Profile
           </v-btn>
           <v-btn 
             v-if="userProfile.isCustomer && stripeCustomerData.subscriptionStatus === 'active'"
@@ -365,5 +348,9 @@ const subscriptionDisplay = computed(() => {
 .py-24 {
   padding-top: 6rem;
   padding-bottom: 1rem;
+}
+
+.min-height-100 {
+  min-height: 80vh;
 }
 </style>

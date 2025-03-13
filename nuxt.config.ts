@@ -7,11 +7,11 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const DEFAULT_TITLE = "Hassle-Free Property Management Services";
-const DEFAULT_DESCRIPTION = `Landlord Partners Ltd offers hassle-free property management services to maximize your rental income. Our services include guaranteed rent, tenant placement, and long-term contracts. Simplify your rental today!`;
-const DEFAULT_LOGO = "assets/main_images/logo-small.jpeg";
+const DEFAULT_TITLE = "Your App Name";
+const DEFAULT_DESCRIPTION = `Your app description goes here.`;
+const DEFAULT_LOGO = "assets/main_images/logo.png";
 const DEFAULT_IMAGE = "assets/main_images/logo.png";
-const DEFAULT_URL = "https://landlordspartners.com";
+const DEFAULT_URL = "https://yourdomain.com";
 const httpsConfig = process.env.NODE_ENV === 'development' && fs.existsSync(path.resolve(__dirname, 'localhost.pem')) ? {
   key: fs.readFileSync(path.resolve(__dirname, 'localhost-key.pem')),
   cert: fs.readFileSync(path.resolve(__dirname, 'localhost.pem'))
@@ -40,10 +40,8 @@ export default defineNuxtConfig({
     "@nuxtjs/eslint-module",
     "@vueuse/nuxt",
     "@nuxt/image",
-    // '@nuxtjs/axios',
     '@nuxt/content',
     '@vite-pwa/nuxt',
-    // '@nuxtjs/sitemap',
     "@pinia/nuxt",
     '@pinia-plugin-persistedstate/nuxt',
     "@formkit/auto-animate",
@@ -73,53 +71,30 @@ export default defineNuxtConfig({
   app: {
     head: {
       title: DEFAULT_TITLE,
-      titleTemplate: '%s | Primax Ltd',
+      titleTemplate: '%s | Your App',
       meta: [
         { 'http-equiv': 'X-UA-Compatible', content: 'IE=edge' },
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
         { hid: 'description', name: 'description', content: DEFAULT_DESCRIPTION },
         { name: 'format-detection', content: 'telephone=no' },
-        { name: 'keywords', content: 'Landlord, Rental, Property Management, Tenant Placement, Guaranteed Rent, Long-term Contracts, Rental Income, Hassle-free, Stress-free, Profitable Rental Experience' }, // NEEDS CHANGING
-        { name: 'author', content: 'Primax Ltd' },
+        { name: 'keywords', content: 'Your keywords here' },
+        { name: 'author', content: 'Your Company' },
         { name: 'robots', content: 'index, follow' },
         { name: 'theme-color', content: '#ffffff' },
         { property: 'og:type', content: 'website' },
         { property: 'og:url', content: DEFAULT_URL },
         { property: 'og:title', content: DEFAULT_TITLE },
-        { property: 'og:description', content: 'Landlord Partners Ltd provides hassle-free property management services to maximize your rental income. Simplify your rental today!' },  // NEEDS CHANGING
+        { property: 'og:description', content: DEFAULT_DESCRIPTION },
         { property: 'og:image', content: DEFAULT_LOGO },
       ],
       link: [
-        { rel: 'icon', type: 'image/jpeg', href: DEFAULT_LOGO },
+        { rel: 'icon', type: 'image/png', href: DEFAULT_LOGO },
         { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
         { rel: 'stylesheet', href: 'https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css' },
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
         { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
         { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap' },
-      ],
-      script: [
-        {
-          type: 'application/ld+json',
-          children: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'LocalBusiness',
-            'name': 'Landlord Partners Ltd',
-            'description': 'Landlord Partners Ltd offers hassle-free property management services to maximize your rental income. Our services include guaranteed rent, tenant placement, and long-term contracts.',
-            'url': DEFAULT_URL,
-            'logo': DEFAULT_LOGO,
-            'email': 'admin@landlordspartners.com',
-            'telephone': '+447818337856',
-            'address': {
-              '@type': 'PostalAddress',
-              'streetAddress': 'City Center',
-              'addressLocality': 'Newcastle Upon Tyne',
-              'addressRegion': 'Tyne and Wear',
-              'postalCode': 'NE1',
-              'addressCountry': 'England'
-            }
-          })
-        }
       ]
     },
     baseURL: '/',
@@ -187,10 +162,6 @@ export default defineNuxtConfig({
 
   devtools: { enabled: true },
 
-  axios: {
-    baseURL: process.env.API_BASE_URL || 'https://api.default-url.com'
-  },
-
   vite: {
     define: {
       'process.env.DEBUG': false,
@@ -203,13 +174,13 @@ export default defineNuxtConfig({
 
   pwa: {
     manifest: {
-      name: 'Primax Ltd',
-      short_name: 'Primax',
+      name: 'Your App Name',
+      short_name: 'YourApp',
       lang: 'en'
     }
   },
 
-  css: ['vuetify/lib/styles/main.sass', '@mdi/font/css/materialdesignicons.min.css', '~/assets/css/style.css', '~/assets/css/transitions.css', '~/assets/fonts/hk-grotesk.css', '~/assets/fonts/dm_serif_display.css'],
+  css: ['vuetify/lib/styles/main.sass', '@mdi/font/css/materialdesignicons.min.css', '~/assets/css/style.css'],
 
   plugins: [
     '~/plugins/firebase.js',
@@ -229,14 +200,6 @@ export default defineNuxtConfig({
     waitForRestart: 5000,
     https: httpsConfig
   },
-
-  // serverMiddleware: [
-  //   { path: '/api/stripe-webhook', handler: '~/server/api/stripe-webhook.js' }
-  // ],
-
-  // serverHandlers: [
-  //   { route: '/api/stripe-webhook', handler: '~/server/api/stripe-webhook.js' }
-  // ],
 
   compatibilityDate: '2024-09-30',
 

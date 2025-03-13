@@ -35,7 +35,6 @@ const verificationSent = ref(false);
 const email = ref('');
 const password = ref('');
 const name = ref('');
-const school = ref('');
 const number = ref('');
 const error = ref('');
 const emailError = ref('');
@@ -85,7 +84,7 @@ const handleSignUp = async () => {
   const response = await fetch('/api/auth/register', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email: email.value, password: password.value, name: name.value, number: number.value, school: school.value }),
+    body: JSON.stringify({ email: email.value, password: password.value, name: name.value, number: number.value }),
   });
 
   const data = await response.json();
@@ -154,6 +153,10 @@ const toggleMode = () => {
   passwordError.value = '';
 };
 
+const handleCancel = () => {
+  emit('close');
+};
+
 onMounted(() => {
   const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
     userStore.setUser(currentUser);
@@ -165,18 +168,18 @@ onMounted(() => {
 
 <template>
   <div class="auth-form">
-    <h1 class="text-h3">
+    <h1 class="text-h3 text-center mb-4">
       {{ isSignUp ? 'Sign Up' : 'Login' }}
     </h1>
     <p
       v-if="error"
-      class="error"
+      class="error text-center mb-4"
     >
       {{ error }}
     </p>
     <p
       v-if="verificationSent"
-      class="info"
+      class="info text-center mb-4"
     >
       A verification email has been sent. Please check your inbox and verify your email before logging in.
     </p>
@@ -188,6 +191,8 @@ onMounted(() => {
         type="email"
         required
         :error-messages="emailError"
+        outlined
+        class="mb-4"
         @blur="validateEmail"
       />
       
@@ -197,6 +202,8 @@ onMounted(() => {
         type="password"
         required
         :error-messages="passwordError"
+        outlined
+        class="mb-4"
         @blur="validatePassword"
       />
       
@@ -205,6 +212,8 @@ onMounted(() => {
           v-model="name"
           label="Full Name"
           type="text"
+          outlined
+          class="mb-4"
         />
         
         <v-text-field
@@ -212,18 +221,15 @@ onMounted(() => {
           label="Phone Number"
           type="tel"
           required
-        />
-        
-        <v-text-field
-          v-model="school"
-          label="School (optional)"
-          type="text"
+          outlined
+          class="mb-4"
         />
         
         <v-checkbox
           v-model="agreeToTerms"
           :rules="[v => !!v || 'You must agree to continue!']"
           required
+          class="mb-4"
         >
           <template #label>
             <span class="text-caption">
@@ -247,6 +253,7 @@ onMounted(() => {
         :disabled="!isFormValid"
         color="primary"
         block
+        class="mb-4"
       >
         {{ isSignUp ? 'Sign Up' : 'Login' }}
       </v-btn>
@@ -254,103 +261,60 @@ onMounted(() => {
       <v-btn
         v-if="!isSignUp"
         text
-        class="mt-2"
+        block
+        class="mb-4"
         @click="handleForgotPassword"
       >
         Forgot Password
       </v-btn>
     </form>
     
-    <v-btn
-      text
-      class="mt-4"
-      @click="toggleMode"
-    >
-      {{ isSignUp ? 'Already a member? Login' : 'Not a member? Sign Up' }}
-    </v-btn>
-    
-    <v-btn
-      v-if="user"
-      color="error"
-      class="mt-4"
-      @click="handleSignOut"
-    >
-      Sign Out
-    </v-btn>
-    
-    <v-btn
-      text
-      class="mt-4"
-      @click="handleCancel"
-    >
-      Cancel
-    </v-btn>
+    <div class="text-center">
+      <v-btn
+        text
+        class="mb-4"
+        @click="toggleMode"
+      >
+        {{ isSignUp ? 'Already have an account? Login' : 'Need an account? Sign Up' }}
+      </v-btn>
+      
+      <v-btn
+        v-if="getUser"
+        color="error"
+        block
+        class="mb-4"
+        @click="handleSignOut"
+      >
+        Sign Out
+      </v-btn>
+      
+      <v-btn
+        text
+        @click="handleCancel"
+      >
+        Cancel
+      </v-btn>
+    </div>
   </div>
 </template>
 
 <style scoped>
 .auth-form {
   background-color: white;
-  padding: 20px;
+  padding: 2rem;
   border-radius: 8px;
-  box-shadow: 0 0 10px black;
-}
-
-form {
-  display: flex;
-  flex-direction: column;
-  max-width: 300px;
-  margin: 20px auto;
-}
-
-.form-group {
-  margin-bottom: 15px;
-}
-
-input, button {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 5px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-}
-
-button {
-  cursor: pointer;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-}
-
-button:disabled {
-  background-color: #ddd;
-  cursor: not-allowed;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  margin: 0 auto;
 }
 
 .error {
-  color: red;
-  font-size: 0.8em;
+  color: #ff5252;
+  font-size: 0.9rem;
 }
 
-.text-button {
-  color: #4eaecf;
-  text-decoration: underline;
-  cursor: pointer;
+.info {
+  color: #2196F3;
+  font-size: 0.9rem;
 }
-
-.checkbox-group {
-  display: flex;
-  align-items: center;
-  margin-bottom: 15px;
-}
-
-.checkbox-group a {
-  color: #4eaecf;
-  text-decoration: none;
-}
-
-.checkbox-group a:hover {
-  text-decoration: underline;
-}
-
 </style>

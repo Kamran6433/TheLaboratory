@@ -104,7 +104,7 @@
             Connect With Us
           </h1>
           <p class="mb-4 text-sm md:text-base">
-            solution@Studybyte.com
+            contact@yourdomain.com
           </p>
           <div class="d-flex">
             <v-btn
@@ -135,7 +135,7 @@
           md="auto"
         >
           <p class="text-xs md:text-sm text-center text-md-left mb-0">
-            © 2024 Studybyte Ltd. All Rights Reserved
+            © {{ new Date().getFullYear() }} Your Company. All Rights Reserved
           </p>
         </v-col>
         <v-col
@@ -147,8 +147,8 @@
               color="red"
               small
             >
-              mdi-brain
-            </v-icon> by Studybyte
+              mdi-heart
+            </v-icon> by Your Team
           </p>
         </v-col>
       </v-row>
@@ -160,19 +160,18 @@
 export default {
   data: () => ({
     companyLinks: [
-      { title: 'About us', link: '/company' },
-      // { title: 'Careers', link: '/careers' },
-      // { title: 'Our blogs', link: '/blogs' },
-      { title: 'Contact us', link: '/company' }
+      { title: 'About', link: '/about' },
+      { title: 'Services', link: '/services' },
+      { title: 'Contact', link: '/contact' }
     ],
     resourceLinks: [
-      { title: 'University Help', link: '/admissions' },
-      { title: 'Past Papers', link: '/past-papers-selector' },
-      { title: '1-to-1 Tutoring', link: '/tutoring' },
+      { title: 'Blog', link: '/blog' },
+      { title: 'Help Center', link: '/help' },
+      { title: 'FAQ', link: '/faq' },
     ],
     legalLinks: [
-      { title: 'Privacy policies', link: '/privacy-policy' },
-      { title: 'Terms & conditions', link: '/terms-and-conditions' },
+      { title: 'Privacy Policy', link: '/privacy-policy' },
+      { title: 'Terms & Conditions', link: '/terms-and-conditions' },
     ],
     socialIcons: [
       { title: 'mdi-facebook', link: 'https://facebook.com' },
@@ -182,7 +181,6 @@ export default {
   }),
 }
 </script>
-
 
 <style scoped>
 .v-list {

@@ -23,4 +23,10 @@ export default {
 .v-app {
   background-color: #fafafa;
 }
+
+.max-width-1600 {
+  max-width: 1600px;
+  margin-left: auto;
+  margin-right: auto;
+}
 </style>

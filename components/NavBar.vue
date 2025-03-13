@@ -4,17 +4,14 @@ import { useNuxtApp, useRouter } from '#app';
 import { useUserStore } from '~/stores/user';
 import { storeToRefs } from 'pinia';
 import { signOut } from 'firebase/auth';
-import FirebaseAuthentication from './FirebaseAuthentication.vue';
 
 const nuxtApp = useNuxtApp();
 const userStore = useUserStore();
 const { getUser } = storeToRefs(userStore);
 const router = useRouter();
 
-const authDialogVisible = ref(false);
 const drawer = ref(false);
 const profileMenu = ref(false);
-const visibleMenuItems = ref(6);
 const isScrolled = ref(false);
 
 const handleScroll = () => {
@@ -24,60 +21,35 @@ const handleScroll = () => {
 const userLoggedIn = computed(() => !!getUser.value);
 
 const menuItems = [
-  { title: 'Admissions Support', link: '/admissions' },
-  { title: 'Subjects', link: '/subjects' },
-  { title: 'Tutoring', link: '/tutoring' },
-  { title: 'Past Papers', link: '/past-papers-selector' },
-  // { title: 'Blogs', link: '/blogs' },
-  { title: 'Company', link: '/company' },
+  { title: 'Home', link: '/' },
+  { title: 'About', link: '/about' },
+  { title: 'Services', link: '/services' },
+  { title: 'Contact', link: '/contact' },
 ];
-
-const authDialogMode = ref('signup');
 
 const redirect = (path) => {
   router.push(path);
 };
 
-const showAuthDialog = (mode = 'signup') => {
-  authDialogMode.value = mode;
-  authDialogVisible.value = true;
-};
-
-const closeAuthDialog = () => {
-  authDialogVisible.value = false;
-};
-
 const logout = async () => {
   if (process.client) {
     const auth = nuxtApp.$firebaseAuth;
-    const router = useRouter();
-    router.push('/');
     try {
       await signOut(auth);
       userStore.clearUser();
       profileMenu.value = false;
+      router.push('/');
     } catch (error) {
       console.error('Error signing out:', error);
     }
   }
 };
 
-const updateVisibleMenuItems = () => {
-  const width = window.innerWidth;
-  if (width < 1400) visibleMenuItems.value = 6;
-  if (width < 1280) visibleMenuItems.value = 5;
-  if (width < 1100) visibleMenuItems.value = 4;
-  if (width < 900) visibleMenuItems.value = 3;
-};
-
 onMounted(() => {
-  updateVisibleMenuItems();
-  window.addEventListener('resize', updateVisibleMenuItems);
   window.addEventListener('scroll', handleScroll);
 });
 
 onUnmounted(() => {
-  window.removeEventListener('resize', updateVisibleMenuItems);
   window.removeEventListener('scroll', handleScroll);
 });
 </script>
@@ -98,7 +70,6 @@ onUnmounted(() => {
           fluid
         >
           <v-row
-            class="box5"
             no-gutters
           >
             <v-col cols="auto">
@@ -109,19 +80,19 @@ onUnmounted(() => {
                 <img
                   src="~/assets/main_images/logo.png"
                   alt="Logo"
-                  class="box2 logo-image"
+                  class="logo-image"
                 >
               </nuxt-link>
             </v-col>
             <v-spacer />
             <v-col
               cols="auto"
-              class="box2 d-flex justify-end"
+              class="d-flex justify-end"
             >
-              <div class="box2 toolbar flex">
-                <v-toolbar-items class="box4 ml-auto flex justify-between items-center hidden-sm-and-down">
+              <div class="toolbar flex">
+                <v-toolbar-items class="flex justify-between items-center hidden-sm-and-down">
                   <v-chip
-                    v-for="item in menuItems.slice(0, visibleMenuItems)"
+                    v-for="item in menuItems"
                     :key="item.title"
                     size="large"
                     color="black"
@@ -219,7 +190,6 @@ onUnmounted(() => {
     </v-app-bar>
   </header>
 
-
   <v-dialog
     v-model="drawer"
     fullscreen
@@ -227,7 +197,7 @@ onUnmounted(() => {
   >
     <v-card
       class="d-flex flex-column"
-      style="background-color: #ecf1ff; height: 100%;"
+      style="background-color: #f5f5f5; height: 100%;"
     >
       <v-list
         class="pa-6 d-flex flex-column"
@@ -241,7 +211,7 @@ onUnmounted(() => {
             <img
               src="~/assets/main_images/logo.png"
               alt="Logo"
-              class="box2 logo-image"
+              class="logo-image"
             >
           </nuxt-link>
           <v-btn
@@ -318,17 +288,6 @@ onUnmounted(() => {
       </v-list>
     </v-card>
   </v-dialog>
-
-  <v-dialog
-    v-model="authDialogVisible"
-    max-width="600px"
-    @click:outside="closeAuthDialog"
-  >
-    <FirebaseAuthentication 
-      :initial-mode="authDialogMode" 
-      @close="closeAuthDialog"
-    />
-  </v-dialog>
 </template>
 
 <style scoped>
@@ -355,19 +314,6 @@ onUnmounted(() => {
   border-bottom: #0000001f 1px solid;
 }
 
-#login {
-  border: 2px solid black;
-  background-color: white;
-}
-
-#logout {
-  background-color: black;
-}
-
-/* .v-app-bar.transparent {
-  background-color: transparent !important;
-} */
-
 .logo {
   display: flex;
   align-items: center;
@@ -393,12 +339,4 @@ onUnmounted(() => {
   width: 100%;
   height: 100%;
 }
-
-/* .text-nav {
-  font-size: 1.125rem;
-  font-weight: 500;
-  line-height: 1.6;
-  letter-spacing: 0.0125em;
-} */
-
 </style>

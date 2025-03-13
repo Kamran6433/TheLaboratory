@@ -15,7 +15,6 @@ const name = ref('');
 const email = ref('');
 const password = ref('');
 const number = ref('');
-const school = ref('');
 const agreeToTerms = ref(false);
 const error = ref('');
 const emailError = ref('');
@@ -46,8 +45,7 @@ const handleSignUp = async () => {
         email: email.value, 
         password: password.value, 
         name: name.value,
-        number: number.value,
-        school: school.value
+        number: number.value
       }),
     });
 
@@ -88,7 +86,7 @@ const goToLogin = () => {
         >
           <v-card-title>
             <h1 class="text-3xl md:text-4xl font-bold mb-6">
-              Sign up to Studybyte
+              Create an Account
             </h1>
           </v-card-title>
           <v-card-text>
@@ -133,14 +131,6 @@ const goToLogin = () => {
                 required
                 class="mb-4"
               />
-              <v-text-field
-                v-model="school"
-                label="School (optional)"
-                type="text"
-                outlined
-                dense
-                class="mb-4"
-              />
               <v-checkbox
                 v-model="agreeToTerms"
                 :rules="[v => !!v || 'You must agree to continue!']"
@@ -164,7 +154,7 @@ const goToLogin = () => {
               </v-checkbox>
               <v-btn
                 type="submit"
-                color="#7C3AED"
+                color="primary"
                 block
                 x-large
                 :disabled="!isFormValid"
@@ -173,17 +163,6 @@ const goToLogin = () => {
                 Sign up
               </v-btn>
             </v-form>
-            <p class="text-center mt-4 text-sm">
-              By signing up, you agree to our 
-              <a
-                href="/terms-of-use"
-                class="text-primary"
-              >Terms of Use</a> and 
-              <a
-                href="/privacy-policy"
-                class="text-primary"
-              >Privacy Policy</a>.
-            </p>
             <p class="text-center mt-6">
               Already have an account? 
               <a
@@ -203,10 +182,10 @@ const goToLogin = () => {
       <v-col
         cols="12"
         md="6"
-        class="d-flex justify-center align-center"
+        class="d-none d-md-flex justify-center align-center"
       >
         <img
-          src="~/assets/3d_images/Saly-3.png"
+          src="https://via.placeholder.com/500x400?text=Signup+Illustration"
           alt="Sign up Illustration"
           class="max-w-full h-auto object-contain illustration"
         >
@@ -221,7 +200,11 @@ const goToLogin = () => {
 }
 
 .py-24 {
-  padding-top: 12rem;
-  padding-bottom: 1rem;
+  padding-top: 8rem;
+  padding-bottom: 3rem;
+}
+
+.min-height-100 {
+  min-height: 80vh;
 }
 </style>

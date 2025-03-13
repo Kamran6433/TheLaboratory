@@ -3,7 +3,6 @@ import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '~/stores/user';
 import { 
-  updateEmail, 
   sendEmailVerification,
   reauthenticateWithCredential,
   EmailAuthProvider
@@ -266,7 +265,7 @@ onUnmounted(() => {
                 No authenticated user found. Please log in first.
               </p>
               <v-btn
-                color="#7C3AED"
+                color="primary"
                 x-large
                 block
                 class="mb-4 px-6 py-3 text-lg font-semibold rounded-xl"
@@ -284,7 +283,7 @@ onUnmounted(() => {
                 Your email has been verified. You can now access your profile.
               </p>
               <v-btn
-                color="#7C3AED"
+                color="primary"
                 x-large
                 block
                 class="mb-4 px-6 py-3 text-lg font-semibold rounded-xl"
@@ -357,7 +356,7 @@ onUnmounted(() => {
                       Cancel
                     </v-btn>
                     <v-btn
-                      color="#7C3AED"
+                      color="primary"
                       :loading="isChangingEmail"
                       :disabled="!isEmailChangeValid"
                       @click="handleEmailChange"
@@ -370,7 +369,7 @@ onUnmounted(() => {
               
               <v-btn
                 :disabled="resendDisabled"
-                color="#7C3AED"
+                color="primary"
                 x-large
                 block
                 class="mb-4 px-6 py-3 text-lg font-semibold rounded-xl"
@@ -398,7 +397,7 @@ onUnmounted(() => {
             <v-progress-circular
               v-if="isLoading"
               indeterminate
-              color="#7C3AED"
+              color="primary"
               class="mt-4"
             />
           </v-card-text>
@@ -407,10 +406,10 @@ onUnmounted(() => {
       <v-col
         cols="12"
         md="6"
-        class="d-flex justify-center align-center"
+        class="d-none d-md-flex justify-center align-center"
       >
         <img
-          src="~/assets/3d_images/Saly-13.png"
+          src="https://via.placeholder.com/400x500?text=Email+Verification"
           alt="Email Verification Illustration"
           class="max-w-full h-auto object-contain illustration"
           style="max-width: 400px"
@@ -426,7 +425,11 @@ onUnmounted(() => {
 }
 
 .py-24 {
-  padding-top: 10rem;
-  padding-bottom: 1rem;
+  padding-top: 8rem;
+  padding-bottom: 3rem;
+}
+
+.min-height-100 {
+  min-height: 80vh;
 }
 </style>
