@@ -1,0 +1,2 @@
+import{_ as t}from"./XABny-ev.js";import{c as s,a as o,b as a,w as e,B as c,o as n,V as r}from"./j--dK8i6.js";const i={class:"max-width-1600"},_={class:"box3 hero"},m={__name:"index",setup(d){return(l,u)=>(n(),s("div",i,[o("section",_,[a(c,{class:"box1 pa-2","data-aos":"fade-up","data-aos-duration":"300"},{default:e(()=>[a(r,{class:"box5 py-20",justify:"center","justify-md":"space-between","justify-xl":"center",align:"center","align-lg":"start","no-gutters":""},{default:e(()=>[a(t)]),_:1})]),_:1})])]))}};export{m as default};
+//# sourceMappingURL=BZ2cur-G.js.map

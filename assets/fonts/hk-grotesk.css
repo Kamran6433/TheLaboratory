@@ -1,0 +1,41 @@
+@font-face {
+  font-family: "HK Grotesk";
+  src: local("HK Grotesk"), url('./hk-grotesk/Light.otf') format("truetype");
+  font-weight: 300;
+}
+
+@font-face {
+  font-family: "HK Grotesk";
+  src: local("HK Grotesk"), url('./hk-grotesk/Regular.otf') format("truetype");
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "HK Grotesk";
+  src: local("HK Grotesk"), url('./hk-grotesk/Medium.otf') format("truetype");
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: "HK Grotesk";
+  src: local("HK Grotesk"), url('./hk-grotesk/SemiBold.otf') format("truetype");
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: "HK Grotesk";
+  src: local("HK Grotesk"), url('./hk-grotesk/Bold.otf') format("truetype");
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: "HK Grotesk";
+  src: local("HK Grotesk"), url('./hk-grotesk/ExtraBold.otf') format("truetype");
+  font-weight: 800;
+}
+
+@font-face {
+  font-family: "HK Grotesk";
+  src: local("HK Grotesk"), url('./hk-grotesk/Black.otf') format("truetype");
+  font-weight: 900;
+}

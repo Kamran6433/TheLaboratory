@@ -1,0 +1,2 @@
+import{as as n,e as l,am as o,at as c,au as a}from"./j--dK8i6.js";const g=n(async(t,f)=>{let s,u;const i=l(),r=["/login","/sign-up","/verify-email"].includes(t.path),e=o.currentUser;if(e){if(i.isAuthenticated||([s,u]=c(()=>e.reload()),await s,u(),i.setUser({uid:e.uid,email:e.email,emailVerified:e.emailVerified})),r)return a("/");if(!e.emailVerified&&t.path!=="/verify-email")return a("/verify-email")}else return i.clearUser(),r?void 0:a("/login");if(!i.isAuthenticated&&!r)return a("/login")});export{g as default};
+//# sourceMappingURL=BBJYbITh.js.map

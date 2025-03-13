@@ -1,0 +1,2 @@
+import{a_ as o,r as u,a$ as f,b0 as d,ao as v,aU as l,b1 as i,b2 as h,aM as m}from"./j--dK8i6.js";function b(t,a={}){const e=a.head||o();if(e)return e.ssr?e.push(t,a):p(e,t,a)}function p(t,a,e={}){const s=u(!1),n=u({});f(()=>{n.value=s.value?{}:d(a)});const r=t.push(n.value,e);return v(n,c=>{r.patch(c)}),m()&&(l(()=>{r.dispose()}),i(()=>{s.value=!0}),h(()=>{s.value=!1})),r}export{b as u};
+//# sourceMappingURL=DyEHTqy1.js.map

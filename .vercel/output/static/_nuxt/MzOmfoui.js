@@ -1,0 +1,2 @@
+import{_ as n,c as s,a as e,o as t}from"./j--dK8i6.js";const r={},c={class:"subscription-cancel"};function a(u,o){return t(),s("div",c,o[0]||(o[0]=[e("h1",null,"Your order was unsuccessful",-1),e("p",null,"Don't worry, you have not been charged anything.",-1),e("a",{href:"/tutoring",class:"tutoring-link"},"Go to Tutoring Page",-1)]))}const l=n(r,[["render",a],["__scopeId","data-v-cf6294fe"]]);export{l as default};
+//# sourceMappingURL=MzOmfoui.js.map

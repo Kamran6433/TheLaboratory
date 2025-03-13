@@ -1,0 +1,2 @@
+import{_ as t,g as n,c as r,a as o,b as c,w as u,o as a,d as i}from"./j--dK8i6.js";const l={},d={class:"subscription-successful"};function f(p,s){const e=n("router-link");return a(),r("div",d,[s[1]||(s[1]=o("h1",null,"Subscription Successful!",-1)),s[2]||(s[2]=o("p",null,"Thank you for subscribing. Your subscription was successful.",-1)),c(e,{to:"/"},{default:u(()=>s[0]||(s[0]=[i(" Go to Home Page ")])),_:1})])}const b=t(l,[["render",f],["__scopeId","data-v-7a035c4b"]]);export{b as default};
+//# sourceMappingURL=DNg_yKkf.js.map
